@@ -10,27 +10,32 @@ urls = []
 
 def generate_urls():
     if len(urls) == 0:
-        for post in r.subreddit('Earthporn').top():
-            if post[-1] == 'g' and post[-2] == 'p' and post[-3] == 'j' and post[-4] == '.':
-                url = post.url
+        for post in r.subreddit('Wallpapers').top():
+            url = post.url
+            if url[-1] == 'g' and url[-2] == 'p' and url[-3] == 'j' and url[-4] == '.':
                 urls.append(url)
-        print(urls)
 
 
-while 1:
-    time = time.time()
-    # if len(urls) == 0:
-    generate_urls()
-    # elif time % 14400:
-    #     generate_urls()
+generate_urls()
 
-    # if time % 1800:
-    download = None
-    post = urls[random.randint(0, len(urls))]
-    download = requests.get(post, allow_redirects=False)
-    urls.pop(post)
+download = None
+index = len(urls)
 
-    open('download.jpg', 'wb').write(download.content)
-    SPI_SETDESKWALLPAPER = 20
-    ctypes.windll.user32.SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, "download.jpg" , 0)
-    time.sleep(1)
+random = random.randint(0, index)
+post = urls[random]
+download = requests.get(post, allow_redirects=False)
+print(" Post URL {}".format(post))
+
+urls.pop(random)
+index -= 1
+
+open('X:\\Code\\Projects\\BackgroundEngine\\download.jpg', 'wb').write(download.content)
+
+ctypes.windll.user32.SystemParametersInfoW(20, 0, "X:\\Code\\Projects\\BackgroundEngine\\download.jpg" , 0)
+print(" Set wallpaper")
+
+time.sleep(5)
+os.remove("X:\\Code\\Projects\\BackgroundEngine\\download.jpg")
+print(" Removed download.jpg")
+time.sleep(2)
+exit()
