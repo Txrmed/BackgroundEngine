@@ -7,8 +7,11 @@ import ctypes
 from dotenv import load_dotenv
 import time
 
+path = "X:\\Code\\Projects\\BackgroundEngine\\downloads\\"
+
 r = praw.Reddit('bot2')
 urls = []
+
 
 def generate_urls():
     if len(urls) == 0:
@@ -18,22 +21,26 @@ def generate_urls():
                 urls.append(url)
 
 
-generate_urls()
 
-random = random.randint(0, len(urls))
-post = urls[random]
+def setWallpaper():
 
-download = requests.get(post, allow_redirects=False)
+    global random
+    generate_urls()
+    random = random.randint(0, len(urls))
+    post = urls[random]
 
-open('X:\\Code\\Projects\\BackgroundEngine\\download.jpg', 'wb').write(download.content)
+    download = requests.get(post, allow_redirects=False)
+    unix_time = time.time()
 
-ctypes.windll.user32.SystemParametersInfoW(20, 0, "X:\\Code\\Projects\\BackgroundEngine\\download.jpg" , 0)
+    open(path + "{}.jpg".format(int(unix_time)), 'wb').write(download.content)
 
-with open("logs.log", "a") as f:
-    current_unix = time.time()
-    f.write("\n[{}] Set Wallpaper to {}".format(current_unix, post))
+    ctypes.windll.user32.SystemParametersInfoW(20, 0, path + "{}.jpg".format(int(unix_time)) , 0)
 
-time.sleep(2)
+    with open("X:\Code\Projects\BackgroundEngine\logs.log", "a") as f:
+        f.write("\n[{}] Set Wallpaper to {}".format(int(unix_time), post))
 
-os.remove("X:\\Code\\Projects\\BackgroundEngine\\download.jpg")
-exit()
+    time.sleep(2)
+
+    exit()
+
+setWallpaper()
