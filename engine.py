@@ -20,8 +20,15 @@ def generate_urls():
             if url[-1] == 'g' and url[-2] == 'p' and url[-3] == 'j' and url[-4] == '.':
                 urls.append(url)
 
-
-
+def removeDownloadsFolderContents(rule):
+    folder = os.listdir("./downloads")
+    if len(folder) >= rule:
+        for file in folder:
+            try:
+                os.remove("./downloads/" + file)
+            except:
+                pass
+            
 def setWallpaper():
 
     global random
@@ -39,7 +46,7 @@ def setWallpaper():
     with open("X:\Code\Projects\BackgroundEngine\logs.log", "a") as f:
         f.write("\n[{}] Set Wallpaper to {}".format(int(unix_time), post))
 
-    time.sleep(2)
+    removeDownloadsFolderContents(10)
 
     exit()
 
