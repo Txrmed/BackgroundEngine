@@ -16,7 +16,7 @@ urls = []
 
 def generate_urls():
     if len(urls) == 0:
-        for post in r.subreddit("Wallpaper").top() and r.subreddit("Wallpaper").hot():
+        for post in r.subreddit("Wallpaper").top():
             url = post.url
             if url[-1] == 'g' and url[-2] == 'p' and url[-3] == 'j' and url[-4] == '.':
                 urls.append(url)
@@ -33,26 +33,27 @@ def removeDownloadsFolderContents(rule):
 def setWallpaper():
 
     global random
-    generate_urls()
-    random = random.randint(0, len(urls))
-    post = urls[random]
 
-    download = requests.get(post, allow_redirects=False)
+    generate_urls()
+
+    post = urls[random.randint(0, len(urls))]
+
     unix_time = time.time()
 
-    open(path + "{}.jpg".format(int(unix_time)), 'wb').write(download.content)
+    open(path + "{}.jpg".format(int(unix_time)), 'wb').write(requests.get(post, allow_redirects=False).content)
 
     ctypes.windll.user32.SystemParametersInfoW(20, 0, path + "{}.jpg".format(int(unix_time)) , 0)
 
+    removeDownloadsFolderContents(10)
+
+    unix_time = time.time()
     with open("X:\Code\Projects\BackgroundEngine\logs.log", "a") as f:
         f.write("\n[{}] Set Wallpaper to {}".format(int(unix_time), post))
-
-    removeDownloadsFolderContents(10)
     
     time_end = time.time()
-    with open("time.txt", "w") as f:
-        f.write("execution time : {}".format(time_end - time_begin))
-    exit()
+    with open("time.txt", "a") as f:
+        f.write("\n{}".format(time_end - time_begin))
 
+    exit()
 
 setWallpaper()
