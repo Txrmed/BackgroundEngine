@@ -1,11 +1,12 @@
 import praw
 import requests
-import time
 import random
 import os
 import ctypes
-from dotenv import load_dotenv
 import time
+import threading
+
+time_begin = time.time()
 
 path = "X:\\Code\\Projects\\BackgroundEngine\\downloads\\"
 
@@ -47,7 +48,11 @@ def setWallpaper():
         f.write("\n[{}] Set Wallpaper to {}".format(int(unix_time), post))
 
     removeDownloadsFolderContents(10)
-
+    
+    time_end = time.time()
+    with open("time.txt", "w") as f:
+        f.write("execution time : {}".format(time_end - time_begin))
     exit()
+
 
 setWallpaper()
