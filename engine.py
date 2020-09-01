@@ -9,12 +9,13 @@ import threading
 time_begin = time.time()
 
 path = "X:\\Code\\Projects\\BackgroundEngine\\downloads\\"
+util_path = "X:\\Code\\Projects\\BackgroundEngine\\"
 
 r = praw.Reddit('bot2')
 urls = []
 
 
-def generate_urls():
+def generateUrls():
     if len(urls) == 0:
         for post in r.subreddit("Wallpaper").top():
             url = post.url
@@ -22,20 +23,17 @@ def generate_urls():
                 urls.append(url)
 
 def removeDownloadsFolderContents(rule):
-    folder = os.listdir("./downloads")
+    folder = os.listdir(path)
     if len(folder) >= rule:
         for file in folder:
             try:
-                os.remove("./downloads/" + file)
+                os.remove(path + file)
             except:
                 pass
             
 def setWallpaper():
 
-    global random
-
-    generate_urls()
-
+    generateUrls()
     post = urls[random.randint(0, len(urls))]
 
     unix_time = time.time()
@@ -45,13 +43,9 @@ def setWallpaper():
     ctypes.windll.user32.SystemParametersInfoW(20, 0, path + "{}.jpg".format(int(unix_time)) , 0)
 
     removeDownloadsFolderContents(10)
-
-    unix_time = time.time()
-    with open("X:\Code\Projects\BackgroundEngine\logs.log", "a") as f:
-        f.write("\n[{}] Set Wallpaper to {}".format(int(unix_time), post))
     
     time_end = time.time()
-    with open("time.txt", "a") as f:
+    with open(path + "time.txt", "a") as f:
         f.write("\n{}".format(time_end - time_begin))
 
     exit()
