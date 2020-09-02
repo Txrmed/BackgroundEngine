@@ -17,7 +17,7 @@ urls = []
 
 def generateUrls():
     if len(urls) == 0:
-        for post in r.subreddit("Wallpaper").top():
+        for post in r.subreddit("Wallpaper").top() and r.subreddit("Wallpaper").hot():
             url = post.url
             if url[-1] == 'g' and url[-2] == 'p' and url[-3] == 'j' and url[-4] == '.':
                 urls.append(url)
@@ -44,9 +44,8 @@ def setWallpaper():
 
     removeDownloadsFolderContents(10)
     
-    time_end = time.time()
-    with open(path + "time.txt", "a") as f:
-        f.write("\n{}".format(time_end - time_begin))
+    with open(util_path + "time.txt", "a") as f:
+        f.write("\n{}".format(time.time() - time_begin))
 
     exit()
 
