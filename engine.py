@@ -16,11 +16,16 @@ urls = []
 
 
 def generateUrls():
+    global gen, gen_e
+    gen = time.time()
+    for post in r.subreddit("Wallpaper").top(limit=10) and r.subreddit("Wallpaper").hot(limit=10):
+        url = post.url
+        if url[-1] == 'g' and url[-2] == 'p' and url[-3] == 'j' and url[-4] == '.':
+            urls.append(url)
+
     if len(urls) == 0:
-        for post in r.subreddit("Wallpaper").top() and r.subreddit("Wallpaper").hot():
-            url = post.url
-            if url[-1] == 'g' and url[-2] == 'p' and url[-3] == 'j' and url[-4] == '.':
-                urls.append(url)
+        generateUrls()
+    gen_e = time.time()
 
 def removeDownloadsFolderContents(rule):
     folder = os.listdir(path)
@@ -31,13 +36,16 @@ def removeDownloadsFolderContents(rule):
             except:
                 pass
             
-def setWallpaper():
+def setImgWallpaper():
 
     generateUrls()
-    post = urls[random.randint(0, len(urls))]
+    print(len(urls))
+    post = urls[random.randint(0, len(urls) - 1)]
+    print(post)
 
     unix_time = time.time()
 
+    d_time_s = time.time()
     open(path + "{}.jpg".format(int(unix_time)), 'wb').write(requests.get(post, allow_redirects=False).content)
 
     ctypes.windll.user32.SystemParametersInfoW(20, 0, path + "{}.jpg".format(int(unix_time)) , 0)
@@ -45,8 +53,7 @@ def setWallpaper():
     removeDownloadsFolderContents(10)
     
     with open(util_path + "time.txt", "a") as f:
-        f.write("\n{}".format(time.time() - time_begin))
+        f.write("\n{} : {} : {}".format(time.time() - time_begin, d_time_o, gen_e - gen))
 
     exit()
-
-setWallpaper()
+setImgWallpaper()
